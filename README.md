@@ -1,4 +1,4 @@
-![Kreedit logo](https://raw.githubusercontent.com/yusnelgg/kreedit/imgs/kreedit.png)
+![Kreedit logo](https://raw.githubusercontent.com/yusnelgg/Kreedit/refs/heads/main/imgs/kreedit.png)
 
 # Kreedit
 
