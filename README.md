@@ -126,7 +126,7 @@ kreedit/
 go test ./... -cover
 ```
 
-coverage: 93.5% of statements
+coverage: 94.4% of statements
 
 ## License
 
