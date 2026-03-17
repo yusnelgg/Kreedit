@@ -1,3 +1,5 @@
+![Kreedit logo](https://raw.githubusercontent.com/yusnelgg/kreedit/imgs/kreedit.png)
+
 # Kreedit
 
 Real-time credit scoring engine with explainable decisions, configurable risk rules, and full audit trail — built in Go.
@@ -16,7 +18,14 @@ Kreedit evaluates loan applications in under 500ms. Submit an application, get b
     "perfect_payment_history",
     "good_credit_history",
     "optimal_age_range"
-  ]
+  ],
+  "breakdown": {
+    "debt_ratio_score": 300,
+    "payment_history_score": 350,
+    "credit_age_score": 160,
+    "age_score": 150,
+    "total": 960
+  }
 }
 ```
 
@@ -24,10 +33,13 @@ Kreedit evaluates loan applications in under 500ms. Submit an application, get b
 
 - Real-time scoring in under 500ms
 - Explainable decisions with human-readable reasons
+- Configurable risk rules via YAML — no redeployment needed
 - Risk tiers A / B / C / D
 - Full score breakdown per rule
-- 93.5% test coverage
+- Audit trail persisted in PostgreSQL
 - Model versioning on every decision
+- 94.4% test coverage
+- Swagger documentation
 
 ## Scoring Model
 
@@ -48,17 +60,36 @@ Kreedit evaluates loan applications in under 500ms. Submit an application, get b
 | 500 – 699 | Manual review | C |
 | 0 – 499 | Rejected | D |
 
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Go |
+| Router | Chi |
+| Database | PostgreSQL (Supabase) |
+| Config | YAML |
+| Docs | Swagger |
+| Tests | Table-driven tests |
+
 ## Getting Started
 
 ### Requirements
 
 - Go 1.21+
+- PostgreSQL database (or Supabase free tier)
 
 ### Run locally
 ```bash
-git clone https://github.com/tuusuario/kreedit
+git clone https://github.com/yusnelgg/kreedit
 cd kreedit
 go mod tidy
+```
+
+Create a `.env` file in the root:
+```
+DATABASE_URL=postgresql://user:password@host:5432/postgres?sslmode=require
+```
+```bash
 go run cmd/api/main.go
 ```
 
@@ -68,8 +99,6 @@ go run cmd/api/main.go
 ```
 POST /api/v1/score
 ```
-
-Request:
 ```json
 {
   "applicant_id": "usr_001",
@@ -82,26 +111,9 @@ Request:
 }
 ```
 
-Response:
-```json
-{
-  "application_id": "app_1234567890",
-  "applicant_id": "usr_001",
-  "score": 870,
-  "decision": "approved",
-  "risk_tier": "A",
-  "credit_limit": 20000,
-  "reasons": ["excellent_debt_ratio", "perfect_payment_history"],
-  "breakdown": {
-    "debt_ratio_score": 300,
-    "payment_history_score": 350,
-    "credit_age_score": 160,
-    "age_score": 150,
-    "total": 960
-  },
-  "model_version": "v1.0.0",
-  "processed_at": "2026-03-17T14:32:00Z"
-}
+### Get scoring history
+```
+GET /api/v1/history/{applicantID}
 ```
 
 ### Health check
@@ -109,25 +121,33 @@ Response:
 GET /api/v1/health
 ```
 
+### Swagger UI
+```
+http://localhost:8080/swagger/index.html
+```
+
 ## Project Structure
 ```
 kreedit/
 ├── cmd/api/          entry point
+├── config/           configurable rules via YAML
 ├── internal/
 │   ├── domain/       types and constants
 │   ├── scoring/      rules engine and tests
-│   ├── storage/      audit trail (coming soon)
+│   ├── storage/      PostgreSQL repository
 │   └── api/          HTTP handler
-└── config/           configurable rules (coming soon)
+└── docs/             swagger generated docs
 ```
 
 ## Tests
 ```bash
 go test ./... -cover
 ```
-
+```
 coverage: 94.4% of statements
+```
 
 ## License
 
 MIT
+
