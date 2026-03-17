@@ -15,16 +15,13 @@ func NewEngine() *Engine {
 	return &Engine{}
 }
 
-// Score es el método principal — recibe una solicitud y devuelve el resultado
 func (e *Engine) Score(app domain.CreditApplication) domain.ScoringResult {
 
-	// 1. Calcular cada regla
 	debtPts, debtReason := calcDebtRatio(app)
 	paymentPts, paymentReason := calcPaymentHistory(app)
 	creditAgePts, creditReason := calcCreditAge(app)
 	agePts, ageReason := calcAgeScore(app)
 
-	// 2. Armar el breakdown
 	breakdown := domain.ScoreBreakdown{
 		DebtRatioScore:      debtPts,
 		PaymentHistoryScore: paymentPts,
@@ -33,16 +30,12 @@ func (e *Engine) Score(app domain.CreditApplication) domain.ScoringResult {
 		Total:               debtPts + paymentPts + creditAgePts + agePts,
 	}
 
-	// 3. Juntar las razones
 	reasons := []string{debtReason, paymentReason, creditReason, ageReason}
 
-	// 4. Tomar la decisión
 	decision, riskTier := decide(breakdown.Total)
 
-	// 5. Calcular límite de crédito
 	creditLimit := calcCreditLimit(app.MonthlyIncome, decision)
 
-	// 6. Armar y devolver el resultado
 	return domain.ScoringResult{
 		ApplicationID: generateID(),
 		ApplicantID:   app.ApplicantID,
@@ -57,7 +50,6 @@ func (e *Engine) Score(app domain.CreditApplication) domain.ScoringResult {
 	}
 }
 
-// decide convierte el score en una decisión y tier
 func decide(score int) (domain.Decision, domain.RiskTier) {
 	switch {
 	case score >= 800:
@@ -71,7 +63,6 @@ func decide(score int) (domain.Decision, domain.RiskTier) {
 	}
 }
 
-// calcCreditLimit define cuánto dinero puede pedir según la decisión
 func calcCreditLimit(monthlyIncome float64, decision domain.Decision) float64 {
 	switch decision {
 	case domain.DecisionApproved:
@@ -83,7 +74,6 @@ func calcCreditLimit(monthlyIncome float64, decision domain.Decision) float64 {
 	}
 }
 
-// generateID crea un ID único para cada solicitud
 func generateID() string {
 	return fmt.Sprintf("app_%d", time.Now().UnixNano())
 }

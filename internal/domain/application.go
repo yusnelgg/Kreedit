@@ -2,7 +2,6 @@ package domain
 
 import "time"
 
-// Decision es el veredicto final de Kreedit
 type Decision string
 
 const (
@@ -11,17 +10,15 @@ const (
 	DecisionRejected Decision = "rejected"
 )
 
-// RiskTier es el nivel de riesgo del solicitante
 type RiskTier string
 
 const (
-	RiskTierA RiskTier = "A" // excelente
-	RiskTierB RiskTier = "B" // bueno
-	RiskTierC RiskTier = "C" // regular
-	RiskTierD RiskTier = "D" // alto riesgo
+	RiskTierA RiskTier = "A"
+	RiskTierB RiskTier = "B"
+	RiskTierC RiskTier = "C"
+	RiskTierD RiskTier = "D"
 )
 
-// CreditApplication es lo que recibe Kreedit
 type CreditApplication struct {
 	ApplicantID     string  `json:"applicant_id"`
 	Age             int     `json:"age"`
@@ -32,7 +29,6 @@ type CreditApplication struct {
 	RequestedAmount float64 `json:"requested_amount"`
 }
 
-// ScoreBreakdown muestra cómo se calculó cada parte
 type ScoreBreakdown struct {
 	DebtRatioScore      int `json:"debt_ratio_score"`
 	PaymentHistoryScore int `json:"payment_history_score"`
@@ -41,7 +37,6 @@ type ScoreBreakdown struct {
 	Total               int `json:"total"`
 }
 
-// ScoringResult es lo que devuelve Kreedit
 type ScoringResult struct {
 	ApplicationID string         `json:"application_id"`
 	ApplicantID   string         `json:"applicant_id"`
