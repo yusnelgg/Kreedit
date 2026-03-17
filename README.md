@@ -1,5 +1,3 @@
-![Kreedit logo](https://raw.githubusercontent.com/yusnelgg/kreedit/imgs/kreedit.png)
-
 # Kreedit
 
 Real-time credit scoring engine with explainable decisions, configurable risk rules, and full audit trail — built in Go.
