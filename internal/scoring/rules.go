@@ -48,7 +48,7 @@ func calcCreditAge(app domain.CreditApplication) (int, string) {
 	case app.CreditHistory >= 12:
 		return 50, "short_credit_history"
 	default:
-		return 10, "short_credit_history"
+		return 10, "very_short_credit_history"
 	}
 }
 
@@ -56,10 +56,10 @@ func calcAgeScore(app domain.CreditApplication) (int, string) {
 	switch {
 	case app.Age >= 30 && app.Age <= 55:
 		return 150, "optimal_age_range"
-	case app.Age >= 25 && app.Age < 60:
+	case app.Age >= 25 && app.Age <= 60:
 		return 110, "good_age_range"
 	case app.Age >= 18:
-		return 80, "acceptable_age_range"
+		return 70, "acceptable_age_range"
 	default:
 		return 0, "invalid_age"
 	}
