@@ -3,11 +3,20 @@ package scoring
 import (
 	"testing"
 
+	"github.com/yusnelgg/kreedit/config"
 	"github.com/yusnelgg/kreedit/internal/domain"
 )
 
+func loadTestConfig() *config.Rules {
+	cfg, err := config.Load("../../config/rules.yaml")
+	if err != nil {
+		panic("no se pudo cargar rules.yaml: " + err.Error())
+	}
+	return cfg
+}
+
 func TestScore(t *testing.T) {
-	engine := NewEngine()
+	engine := NewEngine(loadTestConfig())
 
 	tests := []struct {
 		name         string
@@ -58,7 +67,7 @@ func TestScore(t *testing.T) {
 			wantLimit: 8000,
 		},
 		{
-			name: "score tier B",
+			name: "score tier A",
 			input: domain.CreditApplication{
 				ApplicantID: "usr_005", Age: 40,
 				MonthlyIncome: 4000, MonthlyDebt: 1200,

@@ -7,6 +7,8 @@ import (
 )
 
 func TestCalcDebtRatio(t *testing.T) {
+	cfg := loadTestConfig()
+
 	tests := []struct {
 		name       string
 		income     float64
@@ -24,11 +26,8 @@ func TestCalcDebtRatio(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			app := domain.CreditApplication{
-				MonthlyIncome: tt.income,
-				MonthlyDebt:   tt.debt,
-			}
-			pts, reason := calcDebtRatio(app)
+			app := domain.CreditApplication{MonthlyIncome: tt.income, MonthlyDebt: tt.debt}
+			pts, reason := calcDebtRatio(app, cfg)
 			if pts != tt.wantPoints {
 				t.Errorf("puntos: got %d, want %d", pts, tt.wantPoints)
 			}
@@ -40,6 +39,8 @@ func TestCalcDebtRatio(t *testing.T) {
 }
 
 func TestCalcPaymentHistory(t *testing.T) {
+	cfg := loadTestConfig()
+
 	tests := []struct {
 		name       string
 		missed     int
@@ -56,7 +57,7 @@ func TestCalcPaymentHistory(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app := domain.CreditApplication{MissedPayments: tt.missed}
-			pts, reason := calcPaymentHistory(app)
+			pts, reason := calcPaymentHistory(app, cfg)
 			if pts != tt.wantPoints {
 				t.Errorf("puntos: got %d, want %d", pts, tt.wantPoints)
 			}
@@ -68,6 +69,8 @@ func TestCalcPaymentHistory(t *testing.T) {
 }
 
 func TestCalcCreditAge(t *testing.T) {
+	cfg := loadTestConfig()
+
 	tests := []struct {
 		name       string
 		months     int
@@ -84,7 +87,7 @@ func TestCalcCreditAge(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app := domain.CreditApplication{CreditHistory: tt.months}
-			pts, reason := calcCreditAge(app)
+			pts, reason := calcCreditAge(app, cfg)
 			if pts != tt.wantPoints {
 				t.Errorf("puntos: got %d, want %d", pts, tt.wantPoints)
 			}
@@ -96,6 +99,8 @@ func TestCalcCreditAge(t *testing.T) {
 }
 
 func TestCalcAgeScore(t *testing.T) {
+	cfg := loadTestConfig()
+
 	tests := []struct {
 		name       string
 		age        int
@@ -110,7 +115,7 @@ func TestCalcAgeScore(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app := domain.CreditApplication{Age: tt.age}
-			pts, reason := calcAgeScore(app)
+			pts, reason := calcAgeScore(app, cfg)
 			if pts != tt.wantPoints {
 				t.Errorf("puntos: got %d, want %d", pts, tt.wantPoints)
 			}
