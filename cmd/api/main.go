@@ -28,7 +28,6 @@ func main() {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 	defer db.Close()
-	fmt.Println("Conectado a la base de datos")
 
 	repo := storage.NewRepository(db)
 	engine := scoring.NewEngine(cfg)

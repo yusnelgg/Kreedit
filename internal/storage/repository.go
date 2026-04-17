@@ -3,8 +3,10 @@ package storage
 import (
 	"database/sql"
 	"encoding/json"
+	"strings"
 
 	_ "github.com/lib/pq"
+	_ "modernc.org/sqlite"
 	"github.com/yusnelgg/kreedit/internal/domain"
 )
 
@@ -17,7 +19,28 @@ func NewRepository(db *sql.DB) *Repository {
 }
 
 func Connect(databaseURL string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", databaseURL)
+	var db *sql.DB
+	var err error
+
+	if strings.HasPrefix(databaseURL, "file:") || strings.HasSuffix(databaseURL, ".db") || strings.HasSuffix(databaseURL, ".sqlite") {
+		db, err = sql.Open("sqlite", databaseURL)
+		if err == nil {
+			_, err = db.Exec(`CREATE TABLE IF NOT EXISTS scoring_results (
+				application_id TEXT PRIMARY KEY,
+				applicant_id TEXT NOT NULL,
+				score INTEGER NOT NULL,
+				decision TEXT NOT NULL,
+				risk_tier TEXT NOT NULL,
+				credit_limit REAL NOT NULL,
+				reasons TEXT NOT NULL,
+				model_version TEXT NOT NULL,
+				processed_at TEXT NOT NULL
+			)`)
+		}
+	} else {
+		db, err = sql.Open("postgres", databaseURL)
+	}
+
 	if err != nil {
 		return nil, err
 	}
